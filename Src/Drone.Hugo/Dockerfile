@@ -4,7 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["Src/Drone.Hugo/Drone.Hugo.csproj", "Drone.Hugo/"]
-RUN dotnet restore "Drone.HugoTP/Drone.Hugo.csproj"
+RUN dotnet restore "Drone.Hugo/Drone.Hugo.csproj"
 COPY . .
 WORKDIR "/src/Src/Drone.Hugo"
 RUN dotnet build "Drone.Hugo.csproj" -c Release -o /app/build
