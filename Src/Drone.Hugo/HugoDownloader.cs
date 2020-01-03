@@ -18,8 +18,8 @@ namespace Drone.Hugo
         {
             this.baseDirectory = string.IsNullOrEmpty(baseDirectory) ? GetTemporaryDirectory() : baseDirectory;
 
-            this.packageFilePath = Path.Combine(baseDirectory, "package.tar.gz");
-            this.packageDirectory = Path.Combine(baseDirectory, "package");
+            this.packageFilePath = Path.Combine(this.baseDirectory, "package.tar.gz");
+            this.packageDirectory = Path.Combine(this.baseDirectory, "package");
         }
 
         public async Task<string> Download(string givenVersion, string targetFile = "")
@@ -84,12 +84,12 @@ namespace Drone.Hugo
             Console.WriteLine($"Extracting package to {packageDirectory}");
             TarHelper.ExtractTarGz(packageFilePath, packageDirectory);
 
-            var hugoBinaryPath = Path.Combine(packageFilePath, "hugo");
+            var hugoBinaryPath = Path.Combine(packageDirectory, "hugo");
             var hugoFile = new FileInfo(hugoBinaryPath);
 
             if (!hugoFile.Exists)
             {
-                throw new FileNotFoundException($"The hugo binary could not be found. Maybe it was not correctly downloaded.", hugoBinaryPath);
+                throw new FileNotFoundException("The hugo binary could not be found. Maybe it was not correctly downloaded.", hugoBinaryPath);
             }
             else
             {
