@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Drone.Hugo
 {
@@ -11,73 +10,50 @@ namespace Drone.Hugo
 
         public static Config Load()
         {
-            return new Config().FromEnvironment().Validated();
-        }
-
-        private Config Validated()
-        {
-            if (string.IsNullOrEmpty(Host))
-            {
-                throw new ArgumentException("Host must be given.", nameof(Host));
-            }
-
-            if (string.IsNullOrEmpty(Username))
-            {
-                throw new ArgumentException("Username must be given.", nameof(Username));
-            }
-
-            if (Port <= 0 || Port > 65535)
-            {
-                throw new ArgumentException("Port is not in the valid range.", nameof(Port));
-            }
-
-            if (!Directory.Exists(Source))
-            {
-                throw new ArgumentException("Source directory does not exist.", nameof(Source));
-            }
-
-            if (string.IsNullOrEmpty(Filter))
-            {
-                Filter = "*.*";
-            }
-
-            return this;
+            return new Config().FromEnvironment();
         }
 
         private Config FromEnvironment()
         {
-            Host = Environment.GetEnvironmentVariable("PLUGIN_HOST") ?? "";
-            Port = int.TryParse(Environment.GetEnvironmentVariable("PLUGIN_PORT"), out int port) ? port : 22;
-            Username = Environment.GetEnvironmentVariable("PLUGIN_USERNAME") ?? "";
-            Password = Environment.GetEnvironmentVariable("PLUGIN_PASSWORD") ?? "";
-            Source = Environment.GetEnvironmentVariable("PLUGIN_SOURCE") ?? "./";
-            Filter = Environment.GetEnvironmentVariable("PLUGIN_FILTER") ?? "*.*";
-            Target = Environment.GetEnvironmentVariable("PLUGIN_TARGET") ?? "/";
-            Clear = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_CLEAR"), out bool clear) ? clear : false;
-            Overwrite = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_OVERWRITE"), out bool overwrite) ? overwrite : false;
-            Verbose = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_VERBOSE"), out bool verbose) ? verbose : false;
+            Validate = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_VALIDATE"), out bool validate) ? validate : false;
+
+            HugoVersion = Environment.GetEnvironmentVariable("PLUGIN_HUGO_VERSION") ?? "";
+
+            BaseUrl = Environment.GetEnvironmentVariable("PLUGIN_URL") ?? "";
+            Theme = Environment.GetEnvironmentVariable("PLUGIN_THEME") ?? "";
+
+            BuildDrafts = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_BUILDDRAFTS"), out bool drafts) ? drafts : false;
+            BuildFuture = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_BUILDFUTURE"), out bool future) ? future : false;
+            BuildExpired = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_BUILDEXPIRED"), out bool expired) ? expired : false;
+            Minify = bool.TryParse(Environment.GetEnvironmentVariable("PLUGIN_MINIFY"), out bool minify) ? minify : false;
+
+            ConfigurationFile = Environment.GetEnvironmentVariable("PLUGIN_CONFIG") ?? "";
+            CacheDirectory = Environment.GetEnvironmentVariable("PLUGIN_CACHE") ?? "";
+            ContentDirectory = Environment.GetEnvironmentVariable("PLUGIN_CONTENT") ?? "";
+            LayoutDirectory = Environment.GetEnvironmentVariable("PLUGIN_LAYOUT") ?? "";
+            SourceDirectory = Environment.GetEnvironmentVariable("PLUGIN_SOURCE") ?? "";
+            OutputDirectory = Environment.GetEnvironmentVariable("PLUGIN_OUTPUT") ?? "";
 
             return this;
         }
 
-        public string Host { get; set; }
+        public bool Validate { get; set; }
 
-        public int Port { get; set; }
+        public string HugoVersion { get; set; }
 
-        public string Username { get; set; }
+        public string BaseUrl { get; set; }
+        public string Theme { get; set; }
 
-        public string Password { get; set; }
+        public bool BuildDrafts { get; set; }
+        public bool BuildFuture { get; set; }
+        public bool BuildExpired { get; set; }
+        public bool Minify { get; set; }
 
-        public string Source { get; set; }
-
-        public string Filter { get; set; }
-
-        public string Target { get; set; }
-
-        public bool Clear { get; set; }
-
-        public bool Overwrite { get; set; }
-
-        public bool Verbose { get; set; }
+        public string ConfigurationFile { get; set; }
+        public string CacheDirectory { get; set; }
+        public string ContentDirectory { get; set; }
+        public string LayoutDirectory { get; set; }
+        public string SourceDirectory { get; set; }
+        public string OutputDirectory { get; set; }
     }
 }
