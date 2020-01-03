@@ -43,12 +43,12 @@ namespace Drone.Hugo
             }
 
             await DownloadPackage(versionToDownload);
-            var hugoPath = await ExtractPackage();
+            var hugoBinaryPath = await ExtractPackage();
 
             if (!string.IsNullOrEmpty(targetFile))
             {
-                Console.WriteLine($"Moving {hugoPath} to {targetFile}");
-                File.Move(hugoPath, targetFile, true);
+                Console.WriteLine($"Moving {hugoBinaryPath} to {targetFile}");
+                File.Move(hugoBinaryPath, targetFile, true);
 
                 // Clean up as this was probably during the docker build and we should save some MB's
                 Console.WriteLine("Cleaning up temporary directories");
@@ -56,7 +56,7 @@ namespace Drone.Hugo
                 Directory.Delete(packageDirectory, true);
             }
 
-            return hugoPath;
+            return hugoBinaryPath;
         }
 
         private async Task<string> GetLatestVersion()
@@ -103,7 +103,7 @@ namespace Drone.Hugo
                 hugoPerm.FileAccessPermissions = FileAccessPermissions.UserReadWriteExecute | FileAccessPermissions.GroupRead | FileAccessPermissions.GroupWrite | FileAccessPermissions.OtherRead | FileAccessPermissions.OtherWrite;
             }
 
-            return await Task.FromResult(packageDirectory);
+            return await Task.FromResult(hugoBinaryPath);
         }
 
         private string GetTemporaryDirectory()
